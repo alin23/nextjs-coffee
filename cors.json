@@ -1,0 +1,14 @@
+[
+    {
+        "origin": [
+            "https://domain.tld",
+            "https://www.domain.tld",
+            "https://test.domain.tld",
+            "http://localhost:3000",
+            "http://sierra.local:3000"
+        ],
+        "responseHeader": ["Content-Type"],
+        "method": ["GET", "HEAD"],
+        "maxAgeSeconds": 3600
+    }
+]

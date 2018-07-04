@@ -1,0 +1,13 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				".next",
+				"node_modules"
+			],
+			"path": "."
+		}
+	]
+}
