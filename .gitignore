@@ -1,11 +1,13 @@
 *.js
 *.map
+*.map.js
 .next
 node_modules
 *.sublime-workspace
 !static/js/**/*.js
 .ropeproject
 !next.config.js
+!server.js
 !styled-jsx-plugin-stylus/**/*.js
 !lodash.js
 __pycache__

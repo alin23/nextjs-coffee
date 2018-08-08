@@ -15,6 +15,7 @@ import StartupActions from '~/redux/startup'
 import UIActions from '~/redux/ui'
 
 import API from '~/services/api'
+import withData from '~/services/apollo'
 
 import colors from '~/styles/colors'
 
@@ -146,7 +147,8 @@ mapDispatchToProps = (dispatch) ->
     setUIState: (ui) -> dispatch(UIActions.setState(ui))
     startup: () -> dispatch(StartupActions.startup())
 
-export default withRedux(
-    createStore
-    debug: config.REDUX_DEBUG
-)(connect(mapStateToProps, mapDispatchToProps)(MyApp))
+export default withData(
+    withRedux(
+        createStore
+        debug: config.REDUX_DEBUG
+)(connect(mapStateToProps, mapDispatchToProps)(MyApp)))

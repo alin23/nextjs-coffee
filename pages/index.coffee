@@ -1,12 +1,19 @@
+import { graphql } from 'react-apollo'
+
+import gql from 'graphql-tag'
+
 import config from '~/config'
 
 import { fillWindow, flexColumnCenter } from '~/stylus/app.styl'
 import { mb3, mt5 } from '~/stylus/bootstrap.styl'
 
-export default (props) ->
+Index = ({ data }) ->
     <div className="#{ fillWindow } #{ flexColumnCenter } container">
         <h1 className="#{ mb3 } #{ mt5 } app-title">
-            { config.APP_NAME }
+            { if data.me
+                "Hello #{ data.me.name }!"
+            else
+                config.APP_NAME }
         </h1>
         <h5 className='app-description'>
             { config.APP_DESCRIPTION }
@@ -29,3 +36,14 @@ export default (props) ->
                     font-weight bold
         """}</style>
     </div>
+
+me = gql"#{}
+    query me {
+        me {
+            id
+            name
+            username
+        }
+    }
+"
+export default graphql(me)(Index)

@@ -3,7 +3,7 @@ import { withData } from 'next-apollo'
 
 config =
     link: new HttpLink(
-        uri: 'https://api.graph.cool/simple/v1/cjkl629s83g0q01931q0q3t0c'
+        uri: 'http://localhost:3000/graphql'
         opts:
             credentials: 'same-origin'
   )
