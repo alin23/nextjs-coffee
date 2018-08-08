@@ -1,25 +1,15 @@
 import config from '~/config'
 
-WIDTHS = [
-    8120, 5260, 3840, 2560,
-    1920, 1280, 992, 768, 320
-]
-
-getSrcSet = (name, ext) ->
-    WIDTHS.map((width) ->
-        "#{ config.STATIC }/img/#{ name }/\
-        #{ name }_#{ width }.#{ ext } \
-        #{ width }w"
-    ).join(',')
-
+import { fillWindow, flexColumnCenter } from '~/stylus/app.styl'
+import { mb3, mt5 } from '~/stylus/bootstrap.styl'
 
 export default (props) ->
-    <div className='fill-window flex-column-center container'>
-        <h1 className='mb-3 mt-5 app-title'>
-            App
+    <div className="#{ fillWindow } #{ flexColumnCenter } container">
+        <h1 className="#{ mb3 } #{ mt5 } app-title">
+            { config.APP_NAME }
         </h1>
         <h5 className='app-description'>
-            Description
+            { config.APP_DESCRIPTION }
         </h5>
         <style jsx>{"""#{} // stylus
             .container
@@ -31,7 +21,7 @@ export default (props) ->
                     z-index 1
 
                 h5
-                    @media (max-width: $mobile)
+                    +mobile()
                         font-size 16px
 
                 .app-title
