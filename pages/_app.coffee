@@ -2,7 +2,6 @@ import React from "react"
 import { Provider, connect } from 'react-redux'
 
 import _ from 'lodash'
-import withRedux from "next-redux-wrapper"
 import Head from 'next/head'
 import Router from 'next/router'
 
@@ -16,6 +15,7 @@ import UIActions from '~/redux/ui'
 
 import API from '~/services/api'
 import withData from '~/services/apollo'
+import withRedux from '~/services/redux'
 
 import colors from '~/styles/colors'
 
@@ -59,6 +59,7 @@ class MyApp extends App
             config.DEFAULT_PAGE_PROPS...
             (config.PAGE_PROPS[router.route] ? {})...
             (pageProps.initial ? {})...
+            pathname: router.pathname
         }
 
         return {
@@ -82,6 +83,7 @@ class MyApp extends App
         @props.setUIState({
             config.DEFAULT_PAGE_PROPS...
             pageProps...
+            pathname
         })
 
     componendDidCatch: (error, info) ->
@@ -93,7 +95,6 @@ class MyApp extends App
     componentDidMount: ->
         @detectMobile()
         window.addEventListener('resize', @detectMobileDeferred)
-        @props.setUIState(@props.initial)
 
         Router.events.on('routeChangeComplete', @syncUIStateBound)
 
@@ -101,35 +102,21 @@ class MyApp extends App
 
     render: ->
         { Component, store, props... } = @props
-        defaultPageProps = config.DEFAULT_PAGE_PROPS
-        title = (
-            props.title ?
-            props.initial?.title ?
-            defaultPageProps.title)
-        themeColor = "#{
-            props.themeColor ?
-            props.initial?.themeColor ?
-            defaultPageProps.themeColor }"
-        description = (
-            props.description ?
-            props.initial?.description ?
-            defaultPageProps.description)
-
         <AsyncMode>
             <Container>
                 <Provider store={ store }>
                     <Layout>
                         <Head>
-                            <title>{ title }</title>
+                            <title>{ props.title }</title>
                             <meta
                                 name="description"
-                                content={ description } />
+                                content={ props.description } />
                             <meta
                                 name="theme-color"
-                                content={ themeColor } />
+                                content={ props.themeColor } />
                             <meta
                                 name="msapplication-TileColor"
-                                content={ themeColor } />
+                                content={ props.themeColor } />
                         </Head>
                         <Component { props... } />
                     </Layout>
@@ -147,8 +134,8 @@ mapDispatchToProps = (dispatch) ->
     setUIState: (ui) -> dispatch(UIActions.setState(ui))
     startup: () -> dispatch(StartupActions.startup())
 
-export default withData(
-    withRedux(
-        createStore
-        debug: config.REDUX_DEBUG
-)(connect(mapStateToProps, mapDispatchToProps)(MyApp)))
+ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(MyApp)
+ApolloApp = withData(ConnectedApp)
+ApolloReduxApp = withRedux(createStore, debug: config.REDUX_DEBUG)(ApolloApp)
+
+export default ApolloReduxApp

@@ -8,13 +8,33 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 const webpack = require('webpack')
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-const TEST_MODE = process.env.TEST_MODE === 'true'
-const DOMAIN = 'domain.tld'
+const {
+    API_PATH,
+    APP_DESCRIPTION,
+    APP_NAME,
+    AUTH_TOKEN_COOKIE_KEY,
+    AUTH_TOKEN_EXPIRATION_DAYS,
+    BUNDLE_ANALYZE,
+    DOMAIN,
+    GIT_SHA,
+    GRAPHQL_PATH,
+    NODE_ENV,
+    SENTRY_DSN,
+    STATIC_PATH,
+    WS_PATH,
+} = process.env
 
 module.exports = (phase, { defaultConfig }) => {
-    const apiDomain =
-        phase === PHASE_DEVELOPMENT_SERVER ? 'localhost:3000' : TEST_MODE ? `api-test.${DOMAIN}` : `api.${DOMAIN}`
-    const domain = phase === PHASE_DEVELOPMENT_SERVER ? 'localhost' : `www.${DOMAIN}`
+    const DEV = phase === PHASE_DEVELOPMENT_SERVER
+
+    const localApiUrl = `http://localhost:3000${API_PATH}/`
+    const remoteApiUrl = DEV ? localApiUrl : `https://www.${DOMAIN}${API_PATH}/`
+
+    const localGraphQlUrl = `http://localhost:3000${GRAPHQL_PATH}`
+    const remoteGraphQlUrl = DEV ? localGraphQlUrl : `https://www.${DOMAIN}${GRAPHQL_PATH}`
+
+    const localWsUrl = `ws://localhost:3000${WS_PATH}`
+    const remoteWsUrl = DEV ? localWsUrl : `wss://www.${DOMAIN}${WS_PATH}`
 
     return withStylus(
         withSourceMaps(
@@ -29,22 +49,29 @@ module.exports = (phase, { defaultConfig }) => {
                         use: [nib(), rupture()],
                     },
                     publicRuntimeConfig: {
-                        appName: 'App',
-                        appDescription: 'App Description',
-                        debug: phase === PHASE_DEVELOPMENT_SERVER,
-                        domain: domain,
-                        gitSHA: process.env.GIT_SHA,
-                        sentryDSN: process.env.SENTRY_DSN,
-                        apiURL: phase === PHASE_DEVELOPMENT_SERVER ? `http://${apiDomain}/` : `https://${apiDomain}/`,
-                        wsURL: phase === PHASE_DEVELOPMENT_SERVER ? `ws://${apiDomain}` : `wss://${apiDomain}`,
-                        staticDir: phase === PHASE_DEVELOPMENT_SERVER ? '/static' : `https://static.${DOMAIN}`,
+                        localApiUrl,
+                        remoteApiUrl,
+                        localGraphQlUrl,
+                        remoteGraphQlUrl,
+                        localWsUrl,
+                        remoteWsUrl,
+
+                        appName: APP_NAME,
+                        appDescription: APP_DESCRIPTION,
+                        debug: DEV,
+                        domain: DOMAIN,
+                        gitSHA: GIT_SHA,
+                        sentryDSN: SENTRY_DSN,
+                        staticPath: STATIC_PATH,
+                        authTokenCookieKey: AUTH_TOKEN_COOKIE_KEY,
+                        authTokenExpirationDays: parseInt(AUTH_TOKEN_EXPIRATION_DAYS),
                     },
                     cssModules: true,
-                    analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
-                    analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),
+                    analyzeServer: ['server', 'both'].includes(BUNDLE_ANALYZE),
+                    analyzeBrowser: ['browser', 'both'].includes(BUNDLE_ANALYZE),
                     webpack(config, { dev, isServer }) {
                         console.log('Mode: %s', isServer ? 'Server' : 'Client')
-                        console.log('    Environment: %s', process.env.NODE_ENV)
+                        console.log('    Environment: %s', NODE_ENV)
                         console.log('    Development: %s', dev)
                         config.module.rules.push({
                             test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,

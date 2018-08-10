@@ -6,3 +6,9 @@ export fluid = (min, max, minVW, maxVW) ->
             (#{ maxVW - minVW })
         )
     )"
+
+export classif = (condition, cls, defaultCls = '') ->
+    if condition
+        cls
+    else
+        defaultCls

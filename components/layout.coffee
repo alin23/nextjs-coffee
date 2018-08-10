@@ -1,15 +1,20 @@
 import React from 'react'
 
+import Navbar from '~/components/navbar'
+
 import colors from '~/styles/colors'
 
 import config from '~/config'
 
-export default Layout = (props) ->
+import { flexColumnCenter } from '~/stylus/app.styl'
+
+export default Layout = ({ className, style, children }) ->
     <div
         className="
+            #{ flexColumnCenter }
             layout-container
-            #{ props.className ? '' }"
-        style={ props.style }>
+            #{ className ? '' }"
+        style={ style }>
         <style global jsx>{"""#{} // stylus
             html
             body
@@ -26,5 +31,6 @@ export default Layout = (props) ->
                 background-size cover
                 background white
         """}</style>
-        { props.children }
+        <Navbar />
+        { children }
     </div>

@@ -8,7 +8,12 @@ import Raven from '~/lib/raven'
 { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 
 
-create = (ctx, baseURL = publicRuntimeConfig.apiURL) ->
+create = (ctx, baseURL) ->
+    baseURL ?= if ctx.isServer
+        publicRuntimeConfig.localApiUrl
+    else
+        publicRuntimeConfig.remoteApiUrl
+
     adapter = if not ctx.isServer
         null
     else
@@ -49,9 +54,12 @@ create = (ctx, baseURL = publicRuntimeConfig.apiURL) ->
             request = response.originalError?.request
     )
 
+    authenticate = (username, password) ->
+        api.get("authenticate/#{ username }/#{ password }")
 
     return {
         setHeader: api.setHeader
+        authenticate
     }
 
 export default { create }

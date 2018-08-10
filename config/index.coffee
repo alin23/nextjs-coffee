@@ -5,9 +5,10 @@ import colors from '~/styles/colors'
 
 
 export default config =
+    DOMAIN: publicRuntimeConfig.domain
     APP_NAME: publicRuntimeConfig.appName
     APP_DESCRIPTION: publicRuntimeConfig.appDescription
-    STATIC: "#{ publicRuntimeConfig.staticDir }"
+    STATIC: "#{ publicRuntimeConfig.staticPath }"
     DEV: publicRuntimeConfig.debug
     PRODUCTION: not publicRuntimeConfig.debug
     DISABLE_REACTOTRON: false
@@ -16,6 +17,10 @@ export default config =
         Mukta: [400, 600]
     VERSION: publicRuntimeConfig.gitSHA ? 'dev'
     SENTRY_DSN: publicRuntimeConfig.sentryDSN
+
+    AUTH_TOKEN_COOKIE_KEY: publicRuntimeConfig.authTokenCookieKey
+    AUTH_TOKEN_EXPIRATION_DAYS: publicRuntimeConfig.authTokenExpirationDays
+
     DEFAULT_PAGE_PROPS:
         background: colors.WHITE.s()
         title: publicRuntimeConfig.appName
@@ -24,8 +29,12 @@ export default config =
         navbar:
             background: colors.TRANSPARENT.s()
             color: colors.BLACK.s()
+            hidden: false
     PAGE_PROPS:
         '/': {}
+        '/login':
+            navbar:
+                hidden: true
     WIDTH:
         eightKay: 8120
         fiveKay: 5260

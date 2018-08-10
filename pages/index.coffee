@@ -1,49 +1,64 @@
 import { graphql } from 'react-apollo'
 
-import gql from 'graphql-tag'
-
 import config from '~/config'
 
-import { fillWindow, flexColumnCenter } from '~/stylus/app.styl'
-import { mb3, mt5 } from '~/stylus/bootstrap.styl'
+import { me } from '~/gql'
+import { fillWidthExact, fillWindow, flexColumnCenter } from '~/stylus/app.styl'
+import { flexGrow1, mb3, mt5 } from '~/stylus/bootstrap.styl'
 
-Index = ({ data }) ->
-    <div className="#{ fillWindow } #{ flexColumnCenter } container">
+Hero = ({ className, id, style, children, props... }) ->
+    <div
+        className="
+            #{ flexGrow1 }
+            #{ fillWidthExact }
+            #{ flexColumnCenter }
+            hero
+            #{ className ? '' }"
+        id={ id ? '' }
+        style={ style }
+        { props... }>
         <h1 className="#{ mb3 } #{ mt5 } app-title">
-            { if data.me
-                "Hello #{ data.me.name }!"
-            else
-                config.APP_NAME }
+            { config.APP_NAME }
         </h1>
         <h5 className='app-description'>
             { config.APP_DESCRIPTION }
         </h5>
         <style jsx>{"""#{} // stylus
-            .container
-                background mauveBg
+            .hero
+                background white
+                min-height 500px
 
                 h1, h5
                     text-align center
                     position relative
                     z-index 1
+                    font-size 4rem
 
                 h5
+                    font-size 2rem
                     +mobile()
-                        font-size 16px
+                        font-size 1rem
 
                 .app-title
-                    color lunarYellow
+                    color black
                     font-weight bold
+
+                .app-description
+                    color blue
         """}</style>
     </div>
 
-me = gql"#{}
-    query me {
-        me {
-            id
-            name
-            username
-        }
-    }
-"
+LandingPage = ({ className, id, style, children, props... }) ->
+    <div
+        className={ className ? '' }
+        id={ id ? '' }
+        style={ style }
+        { props... }>
+        <Hero />
+    </div>
+
+class Index extends React.PureComponent
+    render: ->
+        <LandingPage className="#{ fillWindow } #{ flexColumnCenter } container" />
+
 export default graphql(me)(Index)

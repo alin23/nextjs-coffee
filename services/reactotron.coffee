@@ -25,6 +25,9 @@ if config.DEV and not config.DISABLE_REACTOTRON
         .connect()
 
     Reactotron.clear()
+    window.addEventListener('beforeunload', () ->
+        console.tron?.close()
+    )
     console.tron = Reactotron
 else
     console.tron =

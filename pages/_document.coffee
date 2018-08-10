@@ -18,13 +18,13 @@ export default class MyDocument extends Document
     render: ->
         <html>
             <Head>
-                <title>App Name</title>
+                <title>{ config.APP_NAME }</title>
                 <Meta
-                    name='App Name'
-                    description='App Description'
+                    name={ config.APP_NAME }
+                    description={ config.APP_DESCRIPTION }
                     image="#{ config.STATIC }/img/screenshot.jpg"
                     openGraph={
-                        url: 'https://domain.tld'
+                        url: "https://www.#{ config.DOMAIN }"
                         type: 'website'
                     }
                     facebook={ { } }

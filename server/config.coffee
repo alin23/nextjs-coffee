@@ -1,22 +1,28 @@
 DEV = process.env.NODE_ENV isnt 'production'
 PRODUCTION = not DEV
 
-STATIC_DIR = if DEV
-    '/static'
-else
-    'https://static.domain.tld'
-
 ROOT_STATIC_FILES = [
     'robots.txt'
     'favicon.ico'
     'sitemap.xml'
 ]
-GRAPHQL_PATH = '/graphql'
+{
+    API_PATH
+    GRAPHQL_PATH
+    STATIC_PATH
+    AUTH_TOKEN_COOKIE_KEY
+    AUTH_TOKEN_EXPIRATION_DAYS
+} = process.env
+
+AUTH_TOKEN_EXPIRATION_DAYS = parseInt(AUTH_TOKEN_EXPIRATION_DAYS)
 
 module.exports = {
     DEV
     PRODUCTION
-    STATIC_DIR
     ROOT_STATIC_FILES
+    STATIC_PATH
     GRAPHQL_PATH
+    API_PATH
+    AUTH_TOKEN_COOKIE_KEY
+    AUTH_TOKEN_EXPIRATION_DAYS
 }

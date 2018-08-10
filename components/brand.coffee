@@ -1,0 +1,37 @@
+import Link from 'next/link'
+
+import { fontHeading } from '~/stylus/app.styl'
+
+
+Brand = ({ className, id, style, children, size = 2, props... }) ->
+    <Link prefetch href='/'>
+        <a
+            className="#{ fontHeading } #{ className ? '' }"
+            id={ id ? '' }
+            style={{
+                fontSize: "#{ size ? 2 }rem"
+                style...
+            }}
+            { props... }>
+            <span id="logo-left">Next.js</span><span id="logo-right">App</span>
+            <style jsx>{"""#{} // stylus
+                a
+                    font-weight bold
+                    #logo-left
+                        ease-out color
+                        color black
+                    #logo-right
+                        ease-out color
+                        color blue
+                    &:hover
+                        text-decoration none
+                        #logo-left
+                            color blue
+                        #logo-right
+                            color black
+
+            """}</style>
+        </a>
+    </Link>
+
+export default Brand

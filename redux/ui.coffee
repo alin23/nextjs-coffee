@@ -22,6 +22,7 @@ export INITIAL_STATE = Immutable(
     title: null
     description: null
     themeColor: null
+    pathname: null
     navbar: {}
 )
 

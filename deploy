@@ -1,0 +1,6 @@
+#!/usr/bin/env fish
+set -l git_sha (git rev-parse --verify HEAD)
+echo "Deploying release $git_sha"
+
+now -e GIT_SHA="$git_sha"
+and now alias
