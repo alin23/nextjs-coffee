@@ -26,6 +26,7 @@
         ["@babel/stage-0", { "decoratorsLegacy": true }]
     ],
     "plugins": [
+        "babel-plugin-reduxsauce-reducer",
         "lodash",
         "babel-plugin-root-import",
         [

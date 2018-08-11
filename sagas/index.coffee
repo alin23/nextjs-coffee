@@ -1,7 +1,7 @@
 import { all, takeEvery, takeLatest } from 'redux-saga/effects'
 
-import { AuthTypes } from '~/redux/auth'
-import { StartupTypes } from '~/redux/startup'
+import { Types as AuthTypes } from '~/redux/auth'
+import { Types as StartupTypes } from '~/redux/startup'
 
 import API from '~/services/api'
 import { getApolloClient } from '~/services/apollo'

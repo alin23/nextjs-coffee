@@ -5,7 +5,7 @@ import sagaPlugin from 'reactotron-redux-saga'
 
 import Immutable from 'seamless-immutable'
 
-import StartupTypes from '~/redux/startup'
+import { Types as StartupTypes } from '~/redux/startup'
 
 import config from '~/config'
 

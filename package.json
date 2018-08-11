@@ -28,6 +28,7 @@
         "@zeit/next-stylus": "^0.1.1-canary.1",
         "babel-plugin-lodash": "^3.3.4",
         "babel-plugin-ramda": "^1.6.2",
+        "babel-plugin-reduxsauce-reducer": "^1.0.0",
         "babel-plugin-root-import": "^6.1.0",
         "coffee-loader": "^0.9.0",
         "coffeescript": "^2.3.1",

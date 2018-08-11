@@ -1,31 +1,16 @@
-import { createActions, createReducer } from 'reduxsauce'
-
 import Immutable from 'seamless-immutable'
 
-{ Types, Creators } = createActions(
-    startup: null
-    finishStartup: null
-, { prefix: 'startup/' })
-
-export INITIAL_STATE = Immutable(
+PREFIX = 'startup/'
+INITIAL_STATE = Immutable(
     starting: false
 )
 
-export { Types as StartupTypes }
-export default Creators
-
-startup = (state) -> {
+startup = (state, ctx) -> {
     state...
     starting: true
 }
 
-finishStartup = (state) -> {
+finishStartup = (state, ctx) -> {
     state...
     starting: false
 }
-
-ACTION_HANDLERS =
-  "#{ Types.STARTUP }": startup
-  "#{ Types.FINISH_STARTUP }": finishStartup
-
-export reducer = createReducer(INITIAL_STATE, ACTION_HANDLERS)
