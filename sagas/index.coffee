@@ -11,7 +11,7 @@ import startup from './startup'
 
 
 export default getRootSaga = (ctx) ->
-    api = API.create(ctx)
+    api = new API(ctx)
     apollo = getApolloClient(ctx.store)
     return () ->
         yield all([

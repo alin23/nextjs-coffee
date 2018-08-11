@@ -37,7 +37,7 @@ class MyApp extends App
         { store, query, res, req, ctx... } = ctx
         isServer = req?
         cache = if isServer then req?.cache else null
-        api = API.create({ isServer, store, query, res, req, cache })
+        api = new API({ isServer, store, query, res, req, cache })
 
         ctx = { store, query, res, req, isServer, api, ctx... }
         pageProps = {}

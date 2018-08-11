@@ -7,59 +7,63 @@ import Raven from '~/lib/raven'
 
 { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 
+class API
+    constructor: (ctx, baseURL) ->
+        @ctx = ctx
+        @baseURL = baseURL ? if ctx.isServer
+            publicRuntimeConfig.localApiUrl
+        else
+            publicRuntimeConfig.remoteApiUrl
 
-create = (ctx, baseURL) ->
-    baseURL ?= if ctx.isServer
-        publicRuntimeConfig.localApiUrl
-    else
-        publicRuntimeConfig.remoteApiUrl
+        @adapter = if ctx.isServer
+            @getCacheAdapter()
+        else
+            null
 
-    adapter = if not ctx.isServer
-        null
-    else
+        @client = apisauce.create({
+            adapter: @adapter
+            baseURL: @baseURL
+            headers: {}
+            timeout: 60000
+        })
+        if not ctx.isServer
+            @client.addMonitor(console.tron.apisauce)
+
+        @client.addResponseTransform((response) ->
+            if not response.ok
+                responseContext = {
+                    responseData: response.data
+                    responseStatus: response.status
+                    responseHeaders: response.headers
+                    axiosConfig: response.config
+                    responseDuration: response.duration
+                }
+
+                eventId = Raven.captureException(
+                    response.originalError ? response.problem,
+                    { extra: responseContext }
+                )
+                eventId = eventId?._lastEventId ? eventId
+                response.sentryEventId = eventId
+
+                request = response.originalError?.request
+        )
+
+    getCacheAdapter: ->
         cacheAdapterEnhancer(
             axios.defaults.adapter,
             {
                 enabledByDefault: true
-                defaultCache: ctx.cache
+                defaultCache: @ctx.cache
             }
         )
 
-    api = apisauce.create({
-        baseURL
-        headers: {}
-        adapter
-        timeout: 60000
-    })
-    if window?
-        api.addMonitor(console.tron.apisauce)
+    setHeader: ->
+        @client.setHeader
 
-    api.addResponseTransform((response) ->
-        if not response.ok
-            responseContext = {
-                responseData: response.data
-                responseStatus: response.status
-                responseHeaders: response.headers
-                axiosConfig: response.config
-                responseDuration: response.duration
-            }
+    authenticate: (username, password) ->
+        @client.get("authenticate/#{ username }/#{ password }")
 
-            eventId = Raven.captureException(
-                response.originalError ? response.problem,
-                { extra: responseContext }
-            )
-            eventId = eventId?._lastEventId ? eventId
-            response.sentryEventId = eventId
 
-            request = response.originalError?.request
-    )
 
-    authenticate = (username, password) ->
-        api.get("authenticate/#{ username }/#{ password }")
-
-    return {
-        setHeader: api.setHeader
-        authenticate
-    }
-
-export default { create }
+export default API

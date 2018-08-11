@@ -1,4 +1,4 @@
-import { all, call, put, select, take } from 'redux-saga/effects'
+import { all, apply, call, put, select, take } from 'redux-saga/effects'
 
 import { setAuthTokenCookie } from '~/lib/cookie'
 
@@ -6,7 +6,7 @@ import AuthActions from '~/redux/auth'
 
 
 export authenticate = (api, apollo, { username, password }) ->
-    res = yield call(api.authenticate, username, password)
+    res = yield call([api, api.authenticate], username, password)
     unless res.ok
         yield put AuthActions.finishAuthentication(ok = false, user = null)
         return
