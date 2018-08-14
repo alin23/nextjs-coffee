@@ -2,24 +2,18 @@ import Immutable from 'seamless-immutable'
 
 PREFIX = 'auth/'
 INITIAL_STATE = Immutable(
-    authenticating: false
-    authenticated: false
     user: null
+    token: null
 )
 
-authenticate = (state, { username, password }) -> {
-    state...
-    authenticating: true
-}
+resetApolloStore = (state, ctx) -> state
 
 setUser = (state, { user }) -> {
     state...
     user
 }
 
-finishAuthentication = (state, { ok, user }) -> {
+setToken = (state, { token }) -> {
     state...
-    user
-    authenticating: false
-    authenticated: ok
+    token
 }

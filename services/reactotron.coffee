@@ -29,6 +29,11 @@ if config.DEV and not config.DISABLE_REACTOTRON
         console.tron?.close()
     )
     console.tron = Reactotron
+    log = console.log
+    console.log = () ->
+        log(arguments...)
+        console.tron.log(arguments...)
+
 else
     console.tron =
         log: () -> false

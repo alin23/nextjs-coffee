@@ -66,6 +66,7 @@ typings/
 node_modules
 *.sublime-workspace
 !static/js/**/*.js
+static/css/*.css
 .ropeproject
 !next.config.js
 !server.js

@@ -9,6 +9,8 @@ import App, { Container } from "next/app"
 
 import Layout from '~/components/layout'
 
+import { getAuthTokenCookie } from '~/lib/cookie'
+
 import createStore from '~/redux'
 import StartupActions from '~/redux/startup'
 import UIActions from '~/redux/ui'
@@ -44,11 +46,14 @@ class MyApp extends App
         if Component.getInitialProps
             pageProps = await Component.getInitialProps(ctx) ? {}
 
+        if isServer
+            pageProps.authToken = getAuthTokenCookie(req)
+
         if pageProps.error?.problem?
-            { problem, data, sentryEventId } = pageProps.error
-            pageProps = {
-                pageProps...
-                error: { problem, data, sentryEventId }
+            pageProps.error = {
+                problem: pageProps.error.problem,
+                data: pageProps.error.data,
+                sentryEventId: pageProps.error.sentryEventId
             }
 
         fetchedProps = {

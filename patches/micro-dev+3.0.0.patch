@@ -1,0 +1,17 @@
+patch-package
+--- a/node_modules/micro-dev/lib/log.js
++++ b/node_modules/micro-dev/lib/log.js
+@@ -78,10 +78,11 @@ const logResponse = async ({res, end, endTime, requestIndex, chunk}) => {
+ 
+ 	try {
+ 		const str = JSON.parse(chunk);
+-		jsome(str);
++		str = jsome.getColoredString(str);
++		console.log(`${chunk.substr(0, 1000)}${chunk.length > 1000 ? '...' : ''}`);
+ 	} catch (err) {
+ 		if (typeof chunk === 'string') {
+-			console.log(`${chunk.substr(0, 100)}${chunk.length > 100 ? '...' : ''}`);
++			console.log(`${chunk.substr(0, 1000)}${chunk.length > 1000 ? '...' : ''}`);
+ 		}
+ 	}
+ };

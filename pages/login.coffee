@@ -1,79 +1,143 @@
 import React from 'react'
-import { ApolloConsumer } from 'react-apollo'
-import { graphql } from 'react-apollo'
+import { ApolloConsumer, Mutation } from 'react-apollo'
 import { connect } from 'react-redux'
 
-import gql from 'graphql-tag'
 import Router from 'next/router'
 
+import { title } from 'change-case'
+
 import Brand from '~/components/brand'
+import Input from '~/components/input'
 import RoundedButton from '~/components/roundedButton'
+
+import { setAuthTokenCookie } from '~/lib/cookie'
 
 import AuthActions from '~/redux/auth'
 
 import colors from '~/styles/colors'
+import { AtSign, Lock } from '~/styles/icons'
 
 import config from '~/config'
 
-import { flexColumnCenter } from '~/stylus/app.styl'
-import { flexGrow1, mb5, mt5 } from '~/stylus/bootstrap.styl'
+import { authenticate } from '~/gql'
+
 
 class Login extends React.PureComponent
     constructor: (props) ->
         super props
         @state =
-            username: ''
+            email: ''
             password: ''
             authError: false
+            invalidEmail: false
+            invalidPassword: false
+            validEmail: false
 
-    componentDidUpdate: (prevProps, prevState, snapshot) ->
-        if (prevProps.authenticating and not @props.authenticating)
-            if @props.authenticated
-                Router.push('/')
-            else
-                @setState
-                    authError: true
+    loginInput: (type, className, validate, authFn) ->
+        titleType = title(type)
+        <Input
+            type={ if type is 'password' then 'password' else 'text' }
+            placeholder={ titleType }
+            value={ @state[type] }
+            onChange={ (e) =>
+                @setState("#{ type }": e.target.value)
+                validKey = "valid#{ titleType }"
+                invalidKey = "invalid#{ titleType }"
+                if validate?
+                    valid = validate(e.target.value)
+                    @setState(
+                        "#{ invalidKey }": not valid
+                        "#{ validKey }": valid
+                    )
+            }
+            onKeyPress={ (e) =>
+                if e.charCode is 13
+                    @authenticate(authFn)
+            }
+            style={
+                boxShadow: if @state["invalid#{ titleType }"]
+                    "0 0 30px #{ colors.BLACK.alpha(0.3) }"
+                else if @state["valid#{ titleType }"]
+                    "0 0 30px #{ colors.YELLOW.alpha(0.3) }"
+                else
+                    null
+            }
+            className="#{ type }-input #{ className ? '' }" >
+                {switch type
+                    when 'email' then <AtSign />
+                    when 'password' then <Lock />
+                }
+        </Input>
+
+    authenticate: (authFn) ->
+        validEmail = @state.email?.length and @state.email.match(config.EMAIL_REGEX)
+        validPassword = @state.password?.length
+        if validEmail and validPassword
+            @setState
+                authError: null
+                invalidEmail: false
+                invalidPassword: false
+            authFn(
+                variables:
+                    email: @state.email
+                    password: @state.password
+            )
+        else if not validEmail
+            @setState
+                authError: 'Invalid email'
+                invalidEmail: true
+                invalidPassword: false
+        else if not validPassword
+            @setState
+                authError: 'Invalid password'
+                invalidEmail: false
+                invalidPassword: true
+
 
     render: ->
-        <div className="#{ flexGrow1 } #{ flexColumnCenter } container">
-            <div className="#{ flexColumnCenter } login-container">
+        <div className="flex-grow-1 flex-column-center container">
+            <div className="flex-column-center login-container">
                 <h1>Login</h1>
-                <input
-                    type="text"
-                    value={ @state.username }
-                    onChange={ (e) => @setState(username: e.target.value) }
-                    onKeyPress={ (e) =>
-                        if e.charCode is 13 and
-                        @state.username?.length and @state.password?.length
-                            @props.authenticate(@state.username, @state.password)
+                <Mutation
+                    mutation={ authenticate }
+                    onCompleted={ (data) =>
+                        if data?.authenticate?.jwtToken?
+                            @props.setAuthToken(data.authenticate.jwtToken)
                     }
-                    className="#{ mt5 } username-input" />
-                <input
-                    type="password"
-                    value={ @state.password }
-                    onChange={ (e) => @setState(password: e.target.value) }
-                    onKeyPress={ (e) =>
-                        if e.charCode is 13 and
-                        @state.username?.length and @state.password?.length
-                            @props.authenticate(@state.username, @state.password)
+                    onError={ (error) => @setState(authError: 'Wrong email or password') }>
+                    { (authenticate, {data, loading, error }) =>
+                        [
+                            @loginInput(
+                                'email', 'mt-5',
+                                validate = (val) -> val.match(config.EMAIL_REGEX)
+                                authenticate
+                            )
+                            @loginInput(
+                                'password', 'mb-5'
+                                validate = (val) -> val.length > 0
+                                authenticate
+                            )
+                            <RoundedButton
+                                loading={ loading }
+                                onClick={ () =>
+                                    @authenticate(authenticate)
+                                }
+                                color={ colors.BLACK }>
+                                Submit
+                            </RoundedButton>
+                            <p className='mt-3 text-center error' style={
+                                opacity: if @state.authError?.length then 1 else 0
+                            }>
+                                { @state.authError }
+                            </p>
+                        ]
                     }
-                    className="#{ mb5 } password-input" />
-                <RoundedButton
-                    loading={ @props.authenticating }
-                    onClick={ () =>
-                        @props.authenticate(@state.username, @state.password)
-                    }
-                    color={ colors.BLACK }>
-                    Submit
-                </RoundedButton>
-                <p className='error' style={
-                    opacity: if @state.authError then 1 else 0
-                }>Try again</p>
+                </Mutation>
             </div>
             <style jsx>{"""#{} // stylus
                 .login-container
-                    soft-shadow blue 0.4 2 2
-                    border-radius 12px
+                    soft-shadow blue 0.7 1 3
+                    border-radius 30px
                     background blue
                     width 500px
                     height @width * 1.2
@@ -83,15 +147,6 @@ class Login extends React.PureComponent
                         width 100vw
                         height 100vh
 
-                    input
-                        padding 1rem 0.8rem
-                        color white
-                        min-width 300px
-                        border-radius 4px
-                        background alpha(white, 20%)
-                        border none
-                        margin 1rem 0
-
                     .error
                         color white
                         ease-out 0.4 opacity
@@ -99,23 +154,12 @@ class Login extends React.PureComponent
             """}</style>
         </div>
 
-me = gql"#{}
-    query me {
-        me {
-            id
-            name
-            username
-        }
-    }
-"
-
 mapStateToProps = ({ auth }) ->
     authenticating: auth.authenticating
     authenticated: auth.authenticated
     user: auth.user
 
 mapDispatchToProps = (dispatch) ->
-    authenticate: (username, password) ->
-        dispatch(AuthActions.authenticate(username, password))
+    setAuthToken: (token) -> dispatch(AuthActions.setToken(token))
 
-export default graphql(me)(connect(mapStateToProps, mapDispatchToProps)(Login))
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

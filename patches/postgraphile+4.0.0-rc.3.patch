@@ -1,0 +1,12 @@
+patch-package
+--- a/node_modules/postgraphile/build/postgraphile/http/createPostGraphileHttpRequestHandler.js
++++ b/node_modules/postgraphile/build/postgraphile/http/createPostGraphileHttpRequestHandler.js
+@@ -627,7 +627,7 @@ function createPostGraphileHttpRequestHandler(options) {
+             const res = b;
+             const next = c || finalHandler(req, res);
+             // Execute our request handler.
+-            requestHandler(req, res, next).then(
++            return requestHandler(req, res, next).then(
+             // If the request was fulfilled, noop.
+             () => {
+                 /* noop */

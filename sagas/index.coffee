@@ -6,7 +6,7 @@ import { Types as StartupTypes } from '~/redux/startup'
 import API from '~/services/api'
 import { getApolloClient } from '~/services/apollo'
 
-import { authenticate } from './auth'
+import AuthSaga from './auth'
 import startup from './startup'
 
 
@@ -16,5 +16,6 @@ export default getRootSaga = (ctx) ->
     return () ->
         yield all([
             takeLatest(StartupTypes.STARTUP, startup)
-            takeLatest(AuthTypes.AUTHENTICATE, authenticate, api, apollo)
+            takeLatest(AuthTypes.RESET_APOLLO_STORE, AuthSaga.resetApolloStore, apollo)
+            takeLatest(AuthTypes.SET_TOKEN, AuthSaga.setToken, apollo)
         ])

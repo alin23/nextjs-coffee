@@ -7,6 +7,8 @@ import Router from 'next/router'
 
 import { apolloReducer } from 'apollo-cache-redux'
 
+import { getAuthTokenCookie } from '~/lib/cookie'
+
 import getRootSaga from '~/sagas'
 
 import config from '~/config'
@@ -29,6 +31,9 @@ createStore = (initialState = {}, ctx = {}) ->
 
     initialState = {
         initialState...
+        auth: {
+            token: getAuthTokenCookie(ctx.req)
+        }
         ui: {
             config.DEFAULT_PAGE_PROPS...
             (config.PAGE_PROPS[pathname] ? {})...

@@ -1,18 +1,24 @@
 import { all, apply, call, put, select, take } from 'redux-saga/effects'
 
-import { setAuthTokenCookie } from '~/lib/cookie'
+import Router from 'next/router'
+
+import { removeAuthTokenCookie, setAuthTokenCookie } from '~/lib/cookie'
 
 import AuthActions from '~/redux/auth'
 
 
-export authenticate = (api, apollo, { username, password }) ->
-    res = yield call([api, api.authenticate], username, password)
-    unless res.ok
-        yield put AuthActions.finishAuthentication(ok = false, user = null)
-        return
+resetApolloStore = (apollo) ->
+    yield call([apollo, apollo.resetStore])
 
-    user = res.data
-    setAuthTokenCookie(user.token)
-    yield put AuthActions.finishAuthentication(ok = true, user = user)
-    apollo.resetStore()
-    return
+setToken = (apollo, { token }) ->
+    if not token?
+        yield call(removeAuthTokenCookie)
+    else
+        yield call(setAuthTokenCookie, token)
+    yield call([apollo, apollo.resetStore])
+    Router.push('/')
+
+export default {
+    resetApolloStore
+    setToken
+}

@@ -6,14 +6,9 @@ import colors from '~/styles/colors'
 
 import config from '~/config'
 
-import { flexColumnCenter } from '~/stylus/app.styl'
-
 export default Layout = ({ className, style, children }) ->
     <div
-        className="
-            #{ flexColumnCenter }
-            layout-container
-            #{ className ? '' }"
+        className="flex-column-center layout-container #{ className ? '' }"
         style={ style }>
         <style global jsx>{"""#{} // stylus
             html
@@ -29,7 +24,7 @@ export default Layout = ({ className, style, children }) ->
             html
             body
                 background-size cover
-                background white
+                background-color white !important
         """}</style>
         <Navbar />
         { children }

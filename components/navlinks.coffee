@@ -1,17 +1,18 @@
 import { Query } from 'react-apollo'
+import { connect } from 'react-redux'
 
 import Link from 'next/link'
 
 import { removeAuthTokenCookie } from '~/lib/cookie'
 
+import AuthActions from '~/redux/auth'
+
 import { me } from '~/gql'
-import { flexCenter } from '~/stylus/app.styl'
-import { ml2, mx3 } from '~/stylus/bootstrap.styl'
 
 NavLink = ({ className, id, style, children, href, color, props... }) ->
     <Link prefetch href={ href }>
         <a
-            className="#{ mx3 } #{ className ? '' }"
+            className="mx-3 #{ className ? '' }"
             id={ id ? '' }
             style={{
                 color: color
@@ -33,19 +34,21 @@ NavLink = ({ className, id, style, children, href, color, props... }) ->
     </Link>
 
 
-NavLinks = ({ className, id, style, children, props... }) ->
+NavLinks = ({ className, id, style, children, setAuthToken, authToken, props... }) ->
     <div
-        className="#{ flexCenter } #{ className ? '' }"
+        className="flex-center #{ className ? '' }"
         id={ id ? '' }
         style={ style }
         { props... }>
-        <Query query={ me }>
+        <Query query={ me } skip={ not authToken? }>
             { ({loading, error, data, client }) ->
-                if not loading and data?.me?.name
+                if not loading and data?.allUsers?.nodes?[0]? and authToken?
+                    user = data?.allUsers.nodes[0]
                     [
                         <NavLink
                             onClick={ () ->
                                 removeAuthTokenCookie()
+                                setAuthToken(null)
                                 client.resetStore()
                             }
                             key='logout'
@@ -53,9 +56,9 @@ NavLinks = ({ className, id, style, children, props... }) ->
                         <NavLink
                             key='user'
                             href='/user'>
-                            { data.me.name }
+                            { user.fullname }
                             <img
-                                className="#{ ml2 } user-image"
+                                className='ml-2 user-image'
                                 src='https://source.unsplash.com/64x64/?face'
                                 alt='User Image' />
                         </NavLink>
@@ -72,5 +75,10 @@ NavLinks = ({ className, id, style, children, props... }) ->
         """}</style>
     </div>
 
+mapStateToProps = ({ auth }) ->
+    authToken: auth.token
 
-export default NavLinks
+mapDispatchToProps = (dispatch) ->
+    setAuthToken: (token) -> dispatch(AuthActions.setToken(token))
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavLinks)

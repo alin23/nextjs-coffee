@@ -33,6 +33,8 @@ export default class MyDocument extends Document
                 />
                 <Links
                     css={[
+                        '/static/css/app.css'
+                        '/static/css/bootstrap.css'
                         @googleFonts(config.FONTS)
                     ]}
                 />

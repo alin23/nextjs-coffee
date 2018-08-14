@@ -13,7 +13,7 @@ setAuthTokenCookie = (authToken, res) ->
         )
 
 removeAuthTokenCookie = (res) ->
-    setAuthTokenCookie(uuid4(), res)
+    removeCookie(AUTH_TOKEN_COOKIE_KEY, res)
 
 getCookie = (key, req) ->
     cookie.parse(req.headers?.cookie ? '')[key]
@@ -23,7 +23,7 @@ setCookie = (key, value, res, expires = 7) ->
     expireDate.setMilliseconds(expireDate.getMilliseconds() + expires * 864e+5)
     res?.setHeader('Set-Cookie', cookie.serialize(key, value, { expires: expireDate }))
 
-removeCookie = (key, res, expires = 7) ->
+removeCookie = (key, res) ->
     setCookie(key, '', res, -1000)
 
 module.exports = {

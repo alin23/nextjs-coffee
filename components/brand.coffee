@@ -1,12 +1,10 @@
 import Link from 'next/link'
 
-import { fontHeading } from '~/stylus/app.styl'
-
 
 Brand = ({ className, id, style, children, size = 2, props... }) ->
     <Link prefetch href='/'>
         <a
-            className="#{ fontHeading } #{ className ? '' }"
+            className="font-heading #{ className ? '' }"
             id={ id ? '' }
             style={{
                 fontSize: "#{ size ? 2 }rem"

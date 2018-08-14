@@ -2,22 +2,17 @@ import { graphql } from 'react-apollo'
 
 import config from '~/config'
 
-import { me } from '~/gql'
-import { fillWidthExact, fillWindow, flexColumnCenter } from '~/stylus/app.styl'
-import { flexGrow1, mb3, mt5 } from '~/stylus/bootstrap.styl'
-
 Hero = ({ className, id, style, children, props... }) ->
     <div
         className="
-            #{ flexGrow1 }
-            #{ fillWidthExact }
-            #{ flexColumnCenter }
-            hero
-            #{ className ? '' }"
+            flex-grow-1
+            fill-width-exact
+            flex-column-center
+            hero #{ className ? '' }"
         id={ id ? '' }
         style={ style }
         { props... }>
-        <h1 className="#{ mb3 } #{ mt5 } app-title">
+        <h1 className="mb-3 mt-5 app-title">
             { config.APP_NAME }
         </h1>
         <h5 className='app-description'>
@@ -59,6 +54,6 @@ LandingPage = ({ className, id, style, children, props... }) ->
 
 class Index extends React.PureComponent
     render: ->
-        <LandingPage className="#{ fillWindow } #{ flexColumnCenter } container" />
+        <LandingPage className="fill-window flex-column-center container" />
 
-export default graphql(me)(Index)
+export default Index

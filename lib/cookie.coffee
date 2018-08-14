@@ -14,7 +14,7 @@ export setAuthTokenCookie = (authToken, res) ->
         )
 
 export removeAuthTokenCookie = (res) ->
-    setAuthTokenCookie(uuid4(), res)
+    removeCookie(config.AUTH_TOKEN_COOKIE_KEY, res, config.AUTH_TOKEN_EXPIRATION_DAYS)
 
 export setCookie = (key, value, res, expires = 7) ->
     if res?

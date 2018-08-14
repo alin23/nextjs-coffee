@@ -11,7 +11,10 @@ import { ReduxCache } from 'apollo-cache-redux'
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 
+import { getAuthTokenCookie } from '~/lib/cookie'
 import Raven from '~/lib/raven'
+
+import config from '~/config'
 
 { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 apolloClient = null
@@ -29,7 +32,7 @@ create = (apolloConfig, initialState, reduxStore) ->
     else
         createDefaultCache
 
-    config = {
+    clientConfig = {
         connectToDevTools: process.browser
         # Disables forceFetch on the server (so queries are only run once)
         ssrMode: not process.browser
@@ -37,9 +40,9 @@ create = (apolloConfig, initialState, reduxStore) ->
         apolloConfig...
     }
 
-    delete config.createCache
+    delete clientConfig.createCache
 
-    return new ApolloClient(config)
+    return new ApolloClient(clientConfig)
 
 
 initApollo = (apolloConfig, initialState, { store, ctx... } = {}) ->
@@ -138,19 +141,29 @@ withData = (apolloConfig) ->
                     <ComposedComponent { @props... } />
                 </ApolloProvider>
 
-config = ({ isServer = false, req } = {}) ->
-    link: new HttpLink(
-        if isServer
-            uri: publicRuntimeConfig.localGraphQlUrl
-            credentials: 'same-origin'
-            headers:
-                cookie: req?.headers?.cookie
-        else
-            uri: publicRuntimeConfig.remoteGraphQlUrl
-            credentials: 'same-origin'
-    )
+getApolloConfig = ({ isServer = false, req } = {}) ->
+    httpOpts = if isServer
+        uri: publicRuntimeConfig.localGraphQlUrl
+        credentials: 'same-origin'
+        headers:
+            cookie: req?.headers?.cookie
+    else
+        uri: publicRuntimeConfig.remoteGraphQlUrl
+        credentials: 'same-origin'
+        fetch: (uri, options) ->
+            token = getAuthTokenCookie()
+            if token?
+                options.headers.Authorization = "Bearer #{ token }"
+            return fetch(uri, options)
+
+    if isServer
+        token = getAuthTokenCookie(req)
+        if token
+            httpOpts.headers.Authorization = "Bearer #{ token }"
+
+    return { link: new HttpLink(httpOpts) }
 
 export getApolloClient = (store) ->
-    apolloClient ? initApollo(config, null, { store })
+    apolloClient ? initApollo(getApolloConfig, null, { store })
 
-export default withData(config)
+export default withData(getApolloConfig)

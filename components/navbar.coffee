@@ -3,9 +3,6 @@ import { connect } from 'react-redux'
 import Brand from '~/components/brand'
 import NavLinks from '~/components/navlinks'
 
-import { fillWidthExact, flexCenter } from '~/stylus/app.styl'
-import { flexGrow1, ml2, mx3, px4, py4 } from '~/stylus/bootstrap.styl'
-
 
 Navbar = ({
     className, id, style, children, height = 60,
@@ -13,9 +10,8 @@ Navbar = ({
 }) ->
     <nav
         className="
-            #{ flexCenter }
-            #{ px4 } #{ py4 }
-            #{ fillWidthExact }
+            flex-center px-4 py-4
+            fill-width-exact
             #{ className ? '' }"
         id={ id ? '' }
         style={{
@@ -26,7 +22,7 @@ Navbar = ({
         }}
         { props... }>
         <Brand />
-        <div className={ flexGrow1 } />
+        <div className='flex-grow-1' />
         <NavLinks />
         <style jsx>{"""#{} // stylus
             nav
