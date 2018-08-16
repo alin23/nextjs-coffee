@@ -1,10 +1,10 @@
-import Immutable from 'seamless-immutable'
+import Immutable from "seamless-immutable"
 
-import colors from '~/styles/colors'
+import colors from "~/styles/colors"
 
-import config from '~/config'
+import config from "~/config"
 
-PREFIX = 'ui/'
+PREFIX = "ui/"
 INITIAL_STATE = Immutable(
     windowWidth: config.WIDTH.oneKay
     mobile: false
@@ -17,7 +17,8 @@ INITIAL_STATE = Immutable(
     navbar: {}
 )
 
-setState = (state, { newState }) -> {
-    state...
-    newState...
-}
+setState = (state, { newState }) ->
+    {
+        state...
+        newState...
+    }

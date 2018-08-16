@@ -1,27 +1,27 @@
 import React from "react"
-import { Provider, connect } from 'react-redux'
+import { Provider, connect } from "react-redux"
 
-import _ from 'lodash'
-import Head from 'next/head'
-import Router from 'next/router'
+import _ from "lodash"
+import Head from "next/head"
+import Router from "next/router"
 
 import App, { Container } from "next/app"
 
-import Layout from '~/components/layout'
+import Layout from "~/components/layout"
 
-import { getAuthTokenCookie } from '~/lib/cookie'
+import { getAuthTokenCookie } from "~/lib/cookie"
 
-import createStore from '~/redux'
-import StartupActions from '~/redux/startup'
-import UIActions from '~/redux/ui'
+import createStore from "~/redux"
+import StartupActions from "~/redux/startup"
+import UIActions from "~/redux/ui"
 
-import API from '~/services/api'
-import withData from '~/services/apollo'
-import withRedux from '~/services/redux'
+import API from "~/services/api"
+import withData from "~/services/apollo"
+import withRedux from "~/services/redux"
 
-import colors from '~/styles/colors'
+import colors from "~/styles/colors"
 
-import config from '~/config'
+import config from "~/config"
 
 PATHNAME_PATTERN = /\/[^?'#']*/
 
@@ -29,11 +29,12 @@ AsyncMode = React.unstable_AsyncMode
 
 class MyApp extends App
     constructor: (props) ->
-        super props
+        super(props)
         @syncUIStateBound = @syncUIState.bind(this)
         @detectMobileDeferred = _.debounce(
-            (() => @detectMobile()),
-            config.POLLING.windowResize)
+            () => @detectMobile()
+            config.POLLING.windowResize
+        )
 
     @getInitialProps: ({ Component, router, ctx }) ->
         { store, query, res, req, ctx... } = ctx
@@ -44,26 +45,24 @@ class MyApp extends App
         ctx = { store, query, res, req, isServer, api, ctx... }
         pageProps = {}
         if Component.getInitialProps
-            pageProps = await Component.getInitialProps(ctx) ? {}
+            pageProps = (await Component.getInitialProps(ctx)) ? {}
 
         if isServer
             pageProps.authToken = getAuthTokenCookie(req)
 
         if pageProps.error?.problem?
-            pageProps.error = {
-                problem: pageProps.error.problem,
-                data: pageProps.error.data,
+            pageProps.error =
+                problem: pageProps.error.problem
+                data: pageProps.error.data
                 sentryEventId: pageProps.error.sentryEventId
-            }
 
-        fetchedProps = {
-            (pageProps.fetched ? {})...
-        }
-
+        fetchedProps = pageProps.fetched ? {}
+        routeProps = config.PAGE_PROPS[router.route] ? {}
+        initialPageProps = pageProps.initial ? {}
         initialProps = {
             config.DEFAULT_PAGE_PROPS...
-            (config.PAGE_PROPS[router.route] ? {})...
-            (pageProps.initial ? {})...
+            routeProps...
+            initialPageProps...
             pathname: router.pathname
         }
 
@@ -73,7 +72,7 @@ class MyApp extends App
             initial: initialProps
         }
 
-    detectMobile: ->
+    detectMobile: () ->
         @props.batchActions([
             UIActions.setState(
                 windowWidth: window.innerWidth
@@ -92,20 +91,20 @@ class MyApp extends App
         })
 
     componendDidCatch: (error, info) ->
-        Raven.captureException(error, { extra: info })
+        Raven.captureException(error, extra: info)
 
-    componentWillUnmount: ->
-        window.removeEventListener('resize', @detectMobileDeferred)
+    componentWillUnmount: () ->
+        window.removeEventListener("resize", @detectMobileDeferred)
 
-    componentDidMount: ->
+    componentDidMount: () ->
         @detectMobile()
-        window.addEventListener('resize', @detectMobileDeferred)
+        window.addEventListener("resize", @detectMobileDeferred)
 
-        Router.events.on('routeChangeComplete', @syncUIStateBound)
+        Router.events.on("routeChangeComplete", @syncUIStateBound)
 
         @props.startup()
 
-    render: ->
+    render: () ->
         { Component, store, props... } = @props
         <AsyncMode>
             <Container>
@@ -113,17 +112,14 @@ class MyApp extends App
                     <Layout>
                         <Head>
                             <title>{ props.title }</title>
-                            <meta
-                                name="description"
-                                content={ props.description } />
-                            <meta
-                                name="theme-color"
-                                content={ props.themeColor } />
+                            <meta name="description" content={ props.description } />
+                            <meta name="theme-color" content={ props.themeColor } />
                             <meta
                                 name="msapplication-TileColor"
-                                content={ props.themeColor } />
+                                content={ props.themeColor }
+                            />
                         </Head>
-                        <Component { props... } />
+                        <Component {props...} />
                     </Layout>
                 </Provider>
             </Container>

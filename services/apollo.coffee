@@ -1,20 +1,20 @@
-import React from 'react'
-import { ApolloProvider, getDataFromTree } from 'react-apollo'
+import React from "react"
+import { ApolloProvider, getDataFromTree } from "react-apollo"
 
-import fetch from 'isomorphic-fetch'
-import _ from 'lodash'
-import getConfig from 'next/config'
-import Head from 'next/head'
+import fetch from "isomorphic-fetch"
+import _ from "lodash"
+import getConfig from "next/config"
+import Head from "next/head"
 
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { ReduxCache } from 'apollo-cache-redux'
-import { ApolloClient } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
+import { InMemoryCache } from "apollo-cache-inmemory"
+import { ReduxCache } from "apollo-cache-redux"
+import { ApolloClient } from "apollo-client"
+import { HttpLink } from "apollo-link-http"
 
-import { getAuthTokenCookie } from '~/lib/cookie'
-import Raven from '~/lib/raven'
+import { getAuthTokenCookie } from "~/lib/cookie"
+import Raven from "~/lib/raven"
 
-import config from '~/config'
+import config from "~/config"
 
 { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 apolloClient = null
@@ -27,10 +27,13 @@ createDefaultCache = () -> new InMemoryCache()
 createReduxCache = (store) -> new ReduxCache({ store })
 
 create = (apolloConfig, initialState, reduxStore) ->
-    createCache = apolloConfig.createCache ? if reduxStore?
-        () -> createReduxCache(reduxStore)
-    else
-        createDefaultCache
+    createCache =
+        apolloConfig.createCache ? (
+            if reduxStore?
+                () -> createReduxCache(reduxStore)
+            else
+                createDefaultCache
+        )
 
     clientConfig = {
         connectToDevTools: process.browser
@@ -43,7 +46,6 @@ create = (apolloConfig, initialState, reduxStore) ->
     delete clientConfig.createCache
 
     return new ApolloClient(clientConfig)
-
 
 initApollo = (apolloConfig, initialState, { store, ctx... } = {}) ->
     if _.isFunction(apolloConfig)
@@ -61,23 +63,20 @@ initApollo = (apolloConfig, initialState, { store, ctx... } = {}) ->
 
 # Gets the display name of a JSX component for dev tools
 getComponentDisplayName = (Component) ->
-    return Component.displayName or Component.name or 'Unknown'
-
+    return Component.displayName or Component.name or "Unknown"
 
 withData = (apolloConfig) ->
     (ComposedComponent) ->
         class WithData extends React.Component
             @displayName: "WithData(#{ getComponentDisplayName(ComposedComponent) })"
-
             @getInitialProps: ({ Component, router, ctx }) ->
-                serverState = { apollo: { } }
+                serverState = apollo: {}
 
                 # Evaluate the composed component's getInitialProps()
                 composedInitialProps = {}
                 if ComposedComponent.getInitialProps
-                    composedInitialProps = await ComposedComponent.getInitialProps(
-                        { Component, router, ctx }
-                    )
+                    composedInitialProps =
+                        await ComposedComponent.getInitialProps({ Component, router, ctx })
 
                 # Run all GraphQL queries in the component tree
                 # and extract the resulting data
@@ -85,7 +84,7 @@ withData = (apolloConfig) ->
                     apollo = initApollo(apolloConfig, null, ctx)
 
                     # Provide the `url` prop data in case a GraphQL query uses it
-                    url = { query: ctx.query, pathname: ctx.pathname }
+                    url = query: ctx.query, pathname: ctx.pathname
 
                     try
                         # Run all GraphQL queries
@@ -97,15 +96,13 @@ withData = (apolloConfig) ->
                                     Component={ Component }
                                     router={ router }
                                     store={ ctx.store }
-                                    { composedInitialProps... }
+                                    {composedInitialProps...}
                                 />
-                            </ApolloProvider>,
-                            {
-                                router:
-                                    asPath: ctx.asPath
-                                    pathname: ctx.pathname
-                                    query: ctx.query
-                            }
+                            </ApolloProvider>
+                            router:
+                                asPath: ctx.asPath
+                                pathname: ctx.pathname
+                                query: ctx.query
                         )
                     catch error
                         console.error(error)
@@ -119,49 +116,43 @@ withData = (apolloConfig) ->
                     Head.rewind()
 
                     # Extract query data from the Apollo store
-                    serverState =
-                        apollo:
-                            data: apollo.cache.extract()
+                    serverState = apollo: data: apollo.cache.extract()
 
                 return {
                     serverState
                     composedInitialProps...
                 }
 
-
             constructor: (props) ->
                 super(props)
-                @apollo = initApollo(
-                    apolloConfig
-                    @props.serverState?.apollo?.data
-                )
+                @apollo = initApollo(apolloConfig, @props.serverState?.apollo?.data)
 
-            render: ->
+            render: () ->
                 <ApolloProvider client={ @apollo }>
-                    <ComposedComponent { @props... } />
+                    <ComposedComponent {@props...} />
                 </ApolloProvider>
 
 getApolloConfig = ({ isServer = false, req } = {}) ->
-    httpOpts = if isServer
-        uri: publicRuntimeConfig.localGraphQlUrl
-        credentials: 'same-origin'
-        headers:
-            cookie: req?.headers?.cookie
-    else
-        uri: publicRuntimeConfig.remoteGraphQlUrl
-        credentials: 'same-origin'
-        fetch: (uri, options) ->
-            token = getAuthTokenCookie()
-            if token?
-                options.headers.Authorization = "Bearer #{ token }"
-            return fetch(uri, options)
+    httpOpts =
+        if isServer
+            uri: publicRuntimeConfig.localGraphQlUrl
+            credentials: "same-origin"
+            headers: cookie: req?.headers?.cookie
+        else
+            uri: publicRuntimeConfig.remoteGraphQlUrl
+            credentials: "same-origin"
+            fetch: (uri, options) ->
+                token = getAuthTokenCookie()
+                if token?
+                    options.headers.Authorization = "Bearer #{ token }"
+                return fetch(uri, options)
 
     if isServer
         token = getAuthTokenCookie(req)
         if token
             httpOpts.headers.Authorization = "Bearer #{ token }"
 
-    return { link: new HttpLink(httpOpts) }
+    return link: new HttpLink(httpOpts)
 
 export getApolloClient = (store) ->
     apolloClient ? initApollo(getApolloConfig, null, { store })

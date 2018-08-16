@@ -1,42 +1,41 @@
-import { combineReducers } from 'redux'
-import undoable, { includeAction } from 'redux-undo'
+import { combineReducers } from "redux"
+import undoable, { includeAction } from "redux-undo"
 
-import { parse } from 'url'
+import { parse } from "url"
 
-import Router from 'next/router'
+import Router from "next/router"
 
-import { apolloReducer } from 'apollo-cache-redux'
+import { apolloReducer } from "apollo-cache-redux"
 
-import { getAuthTokenCookie } from '~/lib/cookie'
+import { getAuthTokenCookie } from "~/lib/cookie"
 
-import getRootSaga from '~/sagas'
+import getRootSaga from "~/sagas"
 
-import config from '~/config'
+import config from "~/config"
 
-import configureStore from './store'
-
+import configureStore from "./store"
 
 createStore = (initialState = {}, ctx = {}) ->
     rootReducer = combineReducers(
         apollo: apolloReducer
-        auth: require('./auth').reducer
-        startup: require('./startup').reducer
-        ui: require('./ui').reducer
+        auth: require("./auth").reducer
+        startup: require("./startup").reducer
+        ui: require("./ui").reducer
     )
 
-    pathname = if ctx?.isServer
-        parse(ctx.req.url).pathname
-    else
-        Router.pathname
+    pathname =
+        if ctx?.isServer
+            parse(ctx.req.url).pathname
+        else
+            Router.pathname
 
+    routeProps = config.PAGE_PROPS[pathname] ? {}
     initialState = {
         initialState...
-        auth: {
-            token: getAuthTokenCookie(ctx.req)
-        }
+        auth: token: getAuthTokenCookie(ctx.req)
         ui: {
             config.DEFAULT_PAGE_PROPS...
-            (config.PAGE_PROPS[pathname] ? {})...
+            routeProps...
         }
     }
     configureStore(rootReducer, getRootSaga, initialState, ctx)

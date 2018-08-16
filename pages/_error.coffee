@@ -1,6 +1,6 @@
-import NextError from 'next/error'
+import NextError from "next/error"
 
-import Raven from '~/lib/raven'
+import Raven from "~/lib/raven"
 
 class MyError extends NextError
     @getInitialProps: (ctx) ->
@@ -8,7 +8,5 @@ class MyError extends NextError
             console.error(ctx.err)
             Raven.captureException(ctx.err)
         return await NextError.getInitialProps(ctx)
-
-
 
 export default MyError

@@ -1,11 +1,7 @@
-DEV = process.env.NODE_ENV isnt 'production'
+DEV = process.env.NODE_ENV isnt "production"
 PRODUCTION = not DEV
 
-ROOT_STATIC_FILES = [
-    'robots.txt'
-    'favicon.ico'
-    'sitemap.xml'
-]
+ROOT_STATIC_FILES = ["robots.txt", "favicon.ico", "sitemap.xml"]
 {
     API_PATH
     AUTH_TOKEN_COOKIE_KEY

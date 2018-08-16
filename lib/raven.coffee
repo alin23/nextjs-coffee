@@ -1,26 +1,25 @@
-import Raven from 'raven-js'
+import Raven from "raven-js"
 
-import config from '~/config'
-
+import config from "~/config"
 
 # https://gist.github.com/impressiver/5092952
 clientIgnores =
     ignoreErrors: [
-        'top.GLOBALS'
-        'originalCreateNotification'
-        'canvas.contentDocument'
-        'MyApp_RemoveAllHighlights'
-        'http://tt.epicplay.com'
+        "top.GLOBALS"
+        "originalCreateNotification"
+        "canvas.contentDocument"
+        "MyApp_RemoveAllHighlights"
+        "http://tt.epicplay.com"
         "Can't find variable: ZiteReader"
-        'jigsaw is not defined'
-        'ComboSearch is not defined'
-        'http://loading.retry.widdit.com/'
-        'atomicFindClose'
-        'fb_xd_fragment'
-        'bmi_SafeAddOnload'
-        'EBCallBackMessageReceived'
-        'conduitPage'
-        'Script error.'
+        "jigsaw is not defined"
+        "ComboSearch is not defined"
+        "http://loading.retry.widdit.com/"
+        "atomicFindClose"
+        "fb_xd_fragment"
+        "bmi_SafeAddOnload"
+        "EBCallBackMessageReceived"
+        "conduitPage"
+        "Script error."
     ]
     ignoreUrls: [
         # Facebook flakiness
@@ -42,21 +41,20 @@ options =
     autoBreadcrumbs: true
     captureUnhandledRejections: true
     release: config.VERSION
-    environment: if config.DEV
-        'development'
-    else
-        'production'
+    environment:
+        if config.DEV
+            "development"
+        else
+            "production"
 
-IsomorphicRaven = if process.browser is true
-    Raven.config(config.SENTRY_DSN, {
-        clientIgnores...
-        options...
-    }).install()
-    Raven
-else
-    # https://arunoda.me/blog/ssr-and-server-only-modules
-    NodeRaven = eval("require('raven')")
-    NodeRaven.config(config.SENTRY_DSN, options).install()
-    NodeRaven
+IsomorphicRaven =
+    if process.browser is true
+        Raven.config.install()
+        Raven
+    else
+        # https://arunoda.me/blog/ssr-and-server-only-modules
+        NodeRaven = eval("require('raven')")
+        NodeRaven.config(config.SENTRY_DSN, options).install()
+        NodeRaven
 
 export default IsomorphicRaven

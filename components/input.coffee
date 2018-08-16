@@ -1,20 +1,29 @@
+import React from "react"
+
+import c from "classnames"
+
 Input = ({
-    className, id, style, children, type, placeholder,
-    value, onChange, onKeyPress, props...
+    className
+    id
+    style
+    children
+    type
+    placeholder
+    value
+    onChange
+    onKeyPress
+    props...
 }) ->
-    <div
-        className="flex-center #{ className ? '' }"
-        id={ id ? '' }
-        style={ style }
-        { props... }>
+    <div className={ c("flex-center", className) } id={ id ? "" } style={ style } {props...}>
         { children }
         <input
             type={ type }
             placeholder={ placeholder }
             value={ value }
             onChange={ onChange }
-            onKeyPress={ onKeyPress } />
-        <style jsx>{"""#{} // stylus
+            onKeyPress={ onKeyPress }
+        />
+        <style jsx>{ """#{} // stylus
             div
                 background alpha(white, 20%)
                 margin 1rem 0
@@ -33,7 +42,7 @@ Input = ({
                     &::placeholder
                         color alpha(white, 50%)
 
-        """}</style>
+        """ }</style>
     </div>
 
 export default Input

@@ -1,12 +1,12 @@
-{ send } = require 'micro'
-{ parse } = require 'url'
-LRUCache = require 'lru-cache'
-{ PRODUCTION } = require './config'
+{ send } = require("micro")
+{ parse } = require("url")
+LRUCache = require("lru-cache")
+{ PRODUCTION } = require("./config")
 
-ssrCache = new LRUCache({
+ssrCache = new LRUCache(
     max: 100
     maxAge: 1000 * 60 * 60
-})
+)
 
 getCacheKey = (req) ->
     return "#{ req.url }"
@@ -29,6 +29,4 @@ renderAndCache = (app, req, res) ->
     catch err
         app.renderError(err, req, res, pathname, query)
 
-module.exports = {
-    renderAndCache
-}
+module.exports = { renderAndCache }

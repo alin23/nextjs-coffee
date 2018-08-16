@@ -1,10 +1,9 @@
-import Document, { Head, Main, NextScript } from 'next/document'
+import Document, { Head, Main, NextScript } from "next/document"
 
-import Links from '~/components/links'
-import Meta from '~/components/meta'
+import Links from "~/components/links"
+import Meta from "~/components/meta"
 
-import config from '~/config'
-
+import config from "~/config"
 
 export default class MyDocument extends Document
     @getInitialProps: (ctx) ->
@@ -12,31 +11,31 @@ export default class MyDocument extends Document
         return { initialProps... }
 
     googleFonts: (fonts) ->
-        fontString = ("#{ name }:#{ weights.join(',') }" for name, weights of fonts).join('|')
+        fontString = ("#{ name }:#{ weights.join(",") }" for name, weights of fonts).join("|")
         "https://fonts.googleapis.com/css?family=#{ fontString }"
 
-    render: ->
+    render: () ->
         <html>
             <Head>
                 <title>{ config.APP_NAME }</title>
                 <Meta
                     name={ config.APP_NAME }
                     description={ config.APP_DESCRIPTION }
-                    image="#{ config.STATIC }/img/screenshot.jpg"
+                    image={ "#{ config.STATIC }/img/screenshot.jpg" }
                     openGraph={
                         url: "https://www.#{ config.DOMAIN }"
-                        type: 'website'
+                        type: "website"
                     }
-                    facebook={ { } }
-                    appleMobileWebAppStatusBarStyle='black'
+                    facebook={{}}
+                    appleMobileWebAppStatusBarStyle="black"
                     appleMobileWebAppCapable={ false }
                 />
                 <Links
-                    css={[
-                        '/static/css/app.css'
-                        '/static/css/bootstrap.css'
+                    css={ [
+                        "/static/css/app.css"
+                        "/static/css/bootstrap.css"
                         @googleFonts(config.FONTS)
-                    ]}
+                    ] }
                 />
             </Head>
             <body>

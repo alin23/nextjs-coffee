@@ -42,45 +42,45 @@ color.mix(Color('yellow'), 0.3)   // cyan -> rgb(77, 255, 179)
 color.green(100).grayscale().lighten(0.6)
 ###
 
-import Color from 'color'
+import Color from "color"
 
 Color::s = () -> @rgb().string()
 
 colors =
-    TRANSPARENT : 'transparent'
-    FLASH_WHITE : '#FFFFFF'
-    WHITE       : '#FAFAFA'
-    MAROON      : '#aa9483'
-    LIGHT_GRAY  : '#AAAAAA'
-    GRAY        : '#888888'
-    DARK_GRAY   : '#444444'
-    BLACK       : '#1C1C1C'
-    PITCH_BLACK : '#000000'
-    ORANGE      : '#F96332'
-    YELLOW      : '#FFB500'
-    SUNFLOWER   : '#F7CE68'
-    LUNAR_YELLOW: '#FFD586'
-    PEACH       : '#FBAB7E'
-    SEPIA       : '#B97F64'
-    MAUVE       : '#312A4C'
-    GRAY_MAUVE  : '#3E3E70'
-    DARK_MAUVE  : '#291B3B'
-    MAGENTA     : '#E14283'
-    RED         : '#F23343'
-    HOTRED      : '#FF1536'
-    MARS_RED    : '#862833'
-    WEIRD_GREEN : '#46BD62'
-    GREEN       : '#54D381'
-    CALM_BLUE   : '#6488B9'
-    GRAY_BLUE   : '#B1B2DD'
-    BLUE        : '#2977FF'
-    FACEBOOK    : '#3B5998'
-    TWITTER     : '#1DA1F2'
-    LINKEDIN    : '#0077b5'
-    REDDIT      : '#FF4500'
-    MAGENTISH   : '#811a4c'
-    DARK_BLUE   : '#050129'
-    BLACK_MAUVE : '#292837'
+    TRANSPARENT: "transparent"
+    FLASH_WHITE: "#FFFFFF"
+    WHITE: "#FAFAFA"
+    MAROON: "#aa9483"
+    LIGHT_GRAY: "#AAAAAA"
+    GRAY: "#888888"
+    DARK_GRAY: "#444444"
+    BLACK: "#1C1C1C"
+    PITCH_BLACK: "#000000"
+    ORANGE: "#F96332"
+    YELLOW: "#FFB500"
+    SUNFLOWER: "#F7CE68"
+    LUNAR_YELLOW: "#FFD586"
+    PEACH: "#FBAB7E"
+    SEPIA: "#B97F64"
+    MAUVE: "#312A4C"
+    GRAY_MAUVE: "#3E3E70"
+    DARK_MAUVE: "#291B3B"
+    MAGENTA: "#E14283"
+    RED: "#F23343"
+    HOTRED: "#FF1536"
+    MARS_RED: "#862833"
+    WEIRD_GREEN: "#46BD62"
+    GREEN: "#54D381"
+    CALM_BLUE: "#6488B9"
+    GRAY_BLUE: "#B1B2DD"
+    BLUE: "#2977FF"
+    FACEBOOK: "#3B5998"
+    TWITTER: "#1DA1F2"
+    LINKEDIN: "#0077b5"
+    REDDIT: "#FF4500"
+    MAGENTISH: "#811a4c"
+    DARK_BLUE: "#050129"
+    BLACK_MAUVE: "#292837"
 
 for name of colors
     colors[name] = Color(colors[name])

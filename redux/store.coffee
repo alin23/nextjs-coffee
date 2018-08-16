@@ -1,13 +1,13 @@
-import { applyMiddleware, compose, createStore } from 'redux'
-import createSagaMiddleware from 'redux-saga'
+import { applyMiddleware, compose, createStore } from "redux"
+import createSagaMiddleware from "redux-saga"
 
-import { reduxBatch } from '@manaflair/redux-batch'
+import { reduxBatch } from "@manaflair/redux-batch"
 
-import createRavenMiddleware from 'raven-for-redux'
+import createRavenMiddleware from "raven-for-redux"
 
-import Raven from '~/lib/raven'
+import Raven from "~/lib/raven"
 
-import config from '~/config'
+import config from "~/config"
 
 configureStore = (rootReducer, getRootSaga, initialState, ctx) ->
     isClient = not ctx.isServer
@@ -16,7 +16,7 @@ configureStore = (rootReducer, getRootSaga, initialState, ctx) ->
     middleware = []
     sagaMonitor = null
     if isClient and config.DEV
-        require '~/services/reactotron'
+        require("~/services/reactotron")
         if console.tron.createStore?
             createAppropriateStore = console.tron.createStore
         if console.tron.createSagaMonitor?
@@ -40,11 +40,7 @@ configureStore = (rootReducer, getRootSaga, initialState, ctx) ->
     ravenMiddleware = createRavenMiddleware(Raven, {})
     middleware.push(ravenMiddleware)
 
-    enhancers = [
-        reduxBatch
-        applyMiddleware(middleware...)
-        reduxBatch
-    ]
+    enhancers = [reduxBatch, applyMiddleware(middleware...), reduxBatch]
 
     store = createAppropriateStore(rootReducer, initialState, compose(enhancers...))
 

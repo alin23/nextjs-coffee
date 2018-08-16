@@ -1,34 +1,39 @@
-import { connect } from 'react-redux'
+import React from "react"
+import { connect } from "react-redux"
 
-import Brand from '~/components/brand'
-import NavLinks from '~/components/navlinks'
+import c from "classnames"
 
+import Brand from "~/components/brand"
+import NavLinks from "~/components/navlinks"
 
 Navbar = ({
-    className, id, style, children, height = 60,
-    navbarConfig, pathname, props...
+    className
+    id
+    style
+    children
+    height = 60
+    navbarConfig
+    pathname
+    props...
 }) ->
     <nav
-        className="
-            flex-center px-4 py-4
-            fill-width-exact
-            #{ className ? '' }"
-        id={ id ? '' }
+        className={ c("flex-center", "px-4", "py-4", "fill-width-exact", className) }
+        id={ id ? "" }
         style={{
             height: height
             background: navbarConfig.background
-            display: if navbarConfig.hidden then 'none'
+            display: if navbarConfig.hidden then "none"
             style...
         }}
-        { props... }>
+        {props...}>
         <Brand />
-        <div className='flex-grow-1' />
+        <div className="flex-grow-1" />
         <NavLinks />
-        <style jsx>{"""#{} // stylus
+        <style jsx>{ """#{} // stylus
             nav
                 absolute top left
                 background transparent
-        """}</style>
+        """ }</style>
     </nav>
 
 mapStateToProps = ({ ui }) ->

@@ -1,31 +1,40 @@
-import colors from '~/styles/colors'
-import { Loader } from '~/styles/icons'
-import { classif } from '~/styles/util'
+import colors from "~/styles/colors"
+import { Loader } from "~/styles/icons"
 
-import config from '~/config'
-
+import config from "~/config"
 
 RoundedButton = ({
-    color = colors.WHITE, textColor, disabled, loading,
-    width, onClick, hoverColor, hoverTextColor, props...
+    color = colors.WHITE
+    textColor
+    disabled
+    loading
+    width
+    onClick
+    hoverColor
+    hoverTextColor
+    props...
 }) ->
-    hoverColor = (hoverColor ? color)
-    textColor = textColor ? if color.isLight()
-        colors.BLACK
-    else
-        colors.WHITE
-    hoverTextColor = hoverTextColor ? if hoverColor.isLight()
-        colors.BLACK
-    else
-        colors.WHITE
+    hoverColor ?= color
+    textColor ?=
+        if color.isLight()
+            colors.BLACK
+        else
+            colors.WHITE
+    hoverTextColor ?=
+        if hoverColor.isLight()
+            colors.BLACK
+        else
+            colors.WHITE
 
     <button
-        className="
-            d-flex justify-content-center
-            align-items-center
-            rounded-button
-            #{ classif(disabled or loading, 'disabled') }
-            #{ props.className ? '' }"
+        className={ c(
+            "d-flex"
+            "justify-content-center"
+            "align-items-center"
+            "rounded-button"
+            props.className
+            disabled: disabled or loading
+        ) }
         disabled={ disabled or loading }
         style={{
             minWidth: width
@@ -35,9 +44,9 @@ RoundedButton = ({
         { if not loading
             props.children
         else
-            <Loader className='spin-alternate-fast' />
-        }
-        <style jsx>{"""#{} // stylus
+            <Loader className="spin-alternate-fast" />
+         }
+        <style jsx>{ """#{} // stylus
             .rounded-button
                 outline none
                 ease-out 0.25s background-color color 'box-shadow' 'filter' width height 'transform'
@@ -51,7 +60,7 @@ RoundedButton = ({
 
                 &:hover,
                 &:focus
-                    filter: brightness(#{ if color.isLight() then '115%' else '130%' })
+                    filter: brightness(#{ if color.isLight() then "115%" else "130%" })
                     box-shadow 0 3px 10px alpha(black, 0.5)
                     background-color #{ hoverColor ? color }
                     color #{ hoverTextColor }
@@ -66,7 +75,7 @@ RoundedButton = ({
                     color #{ color.desaturate(0.3) }
                     border 1px solid #{ color.desaturate(0.3) }
 
-        """}</style>
+        """ }</style>
     </button>
 
 export default RoundedButton

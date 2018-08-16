@@ -1,16 +1,16 @@
-import React from 'react'
+import React from "react"
 
-import Navbar from '~/components/navbar'
+import c from "classnames"
 
-import colors from '~/styles/colors'
+import Navbar from "~/components/navbar"
 
-import config from '~/config'
+import colors from "~/styles/colors"
+
+import config from "~/config"
 
 export default Layout = ({ className, style, children }) ->
-    <div
-        className="flex-column-center layout-container #{ className ? '' }"
-        style={ style }>
-        <style global jsx>{"""#{} // stylus
+    <div className={ c("flex-column-center", "layout-container", className) } style={ style }>
+        <style global jsx>{ """#{} // stylus
             html
             body
             body > #__next
@@ -25,7 +25,7 @@ export default Layout = ({ className, style, children }) ->
             body
                 background-size cover
                 background-color white !important
-        """}</style>
+        """ }</style>
         <Navbar />
         { children }
     </div>

@@ -1,18 +1,21 @@
-import Link from 'next/link'
+import React from "react"
 
+import c from "classnames"
+import Link from "next/link"
 
 Brand = ({ className, id, style, children, size = 2, props... }) ->
-    <Link prefetch href='/'>
+    <Link prefetch href="/">
         <a
-            className="font-heading #{ className ? '' }"
-            id={ id ? '' }
+            className={ c("font-heading", className) }
+            id={ id ? "" }
             style={{
                 fontSize: "#{ size ? 2 }rem"
                 style...
             }}
-            { props... }>
-            <span id="logo-left">Next.js</span><span id="logo-right">App</span>
-            <style jsx>{"""#{} // stylus
+            {props...}>
+            <span id="logo-left">Next.js</span>
+            <span id="logo-right">App</span>
+            <style jsx>{ """#{} // stylus
                 a
                     font-weight bold
                     #logo-left
@@ -28,7 +31,7 @@ Brand = ({ className, id, style, children, size = 2, props... }) ->
                         #logo-right
                             color black
 
-            """}</style>
+            """ }</style>
         </a>
     </Link>
 

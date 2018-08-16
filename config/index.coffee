@@ -1,10 +1,9 @@
-import getConfig from 'next/config'
+import getConfig from "next/config"
 
-import colors from '~/styles/colors'
+import colors from "~/styles/colors"
 { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 
-
-export default config =
+config =
     DOMAIN: publicRuntimeConfig.domain
     APP_NAME: publicRuntimeConfig.appName
     APP_DESCRIPTION: publicRuntimeConfig.appDescription
@@ -13,9 +12,8 @@ export default config =
     PRODUCTION: not publicRuntimeConfig.debug
     DISABLE_REACTOTRON: false
     REDUX_DEBUG: false
-    FONTS:
-        Mukta: [400, 600]
-    VERSION: publicRuntimeConfig.gitSHA ? 'dev'
+    FONTS: Mukta: [400, 600]
+    VERSION: publicRuntimeConfig.gitSHA ? "dev"
     SENTRY_DSN: publicRuntimeConfig.sentryDSN
 
     AUTH_TOKEN_COOKIE_KEY: publicRuntimeConfig.authTokenCookieKey
@@ -31,10 +29,8 @@ export default config =
             color: colors.BLACK.s()
             hidden: false
     PAGE_PROPS:
-        '/': {}
-        '/login':
-            navbar:
-                hidden: true
+        "/": {}
+        "/login": navbar: hidden: true
     WIDTH:
         eightKay: 8120
         fiveKay: 5260
@@ -47,8 +43,10 @@ export default config =
         mobile: 576
         mobileSmall: 320
         thumb: 64
-    POLLING:
-        windowResize: 500
+    POLLING: windowResize: 500
     # coffeelint: disable=max_line_length
-    EMAIL_REGEX: /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    # coffeelint: enable=max_line_length
+    EMAIL_REGEX:
+        /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+# coffeelint: enable=max_line_length
+
+export default config

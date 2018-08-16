@@ -1,0 +1,8 @@
+tabWidth: 4
+printWidth: 94
+jsxBracketSameLine: true
+arrowParens: always
+bracketSpacing: true
+parser: "coffeescript"
+plugins:
+  - "node_modules/prettier-plugin-coffeescript"
