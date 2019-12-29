@@ -59,7 +59,7 @@
         "svg-react-loader": "^0.4.5",
         "url-loader": "^1.0.1",
         "webpack": "4",
-        "webpack-bundle-analyzer": "^2.13.1"
+        "webpack-bundle-analyzer": "^3.3.2"
     },
     "dependencies": {
         "@manaflair/redux-batch": "^0.1.0",
