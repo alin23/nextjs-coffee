@@ -68,7 +68,7 @@
         "apollo-client": "^2.3.8",
         "apollo-link-http": "^1.5.4",
         "apollo-server-micro": "^2.0.0",
-        "axios": "^0.18.1",
+        "axios": "^0.21.1",
         "classnames": "^2.2.6",
         "color": "^3.0.0",
         "cookie": "^0.3.1",
